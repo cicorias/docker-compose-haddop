@@ -18,3 +18,12 @@ wordcount:
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -cat /output/*
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
+
+missingcard:
+	docker build -t hadoop-wordcount ./submit
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -mkdir -p /input/
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-submit:$(current_branch) hdfs dfs -copyFromLocal /tmp/cards.txt /input/
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-submit:$(current_branch)
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -cat /output/*
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
