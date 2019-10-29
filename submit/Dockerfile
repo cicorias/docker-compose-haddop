@@ -1,10 +1,11 @@
-FROM bde2020/hadoop-base
+FROM cicorias/hadoop-base
 
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+MAINTAINER Shawn Cicoria <github@cicoria.com>
 
-COPY WordCount.jar /opt/hadoop/applications/WordCount.jar
+# COPY WordCount.jar /opt/hadoop/applications/WordCount.jar
+COPY missingcard-1.0-SNAPSHOT.jar /opt/hadoop/applications/missingcard-1.0-SNAPSHOT.jar
 
-ENV JAR_FILEPATH="/opt/hadoop/applications/WordCount.jar"
+ENV JAR_FILEPATH="/opt/hadoop/applications/missingcard-1.0-SNAPSHOT.jar"
 ENV CLASS_TO_RUN="WordCount"
 ENV PARAMS="/input /output"
 

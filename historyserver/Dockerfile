@@ -1,6 +1,6 @@
-FROM bde2020/hadoop-base
+FROM cicorias/hadoop-base
 
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+MAINTAINER Shawn Cicoria <github@cicoria.com>
 
 HEALTHCHECK CMD curl -f http://localhost:8188/ || exit 1
 
