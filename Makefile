@@ -1,6 +1,7 @@
 DOCKER_NETWORK = docker-compose-hadoop_default
 ENV_FILE = hadoop.env
 current_branch := 2.0.0-hadoop3.2.1-java8 #$(shell git rev-parse --abbrev-ref HEAD)
+data_dir = /Users/cicorias/dev/njit/docker-compose-hadoop/submit
 build:
 	docker build -t cicorias/hadoop-base:$(current_branch) ./base
 	docker build -t cicorias/hadoop-namenode:$(current_branch) ./namenode
@@ -19,11 +20,15 @@ wordcount:
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
 
+clean:
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
+
 missingcard:
-	docker build -t hadoop-wordcount ./submit
+	docker build -t hadoop-missingcard ./submit
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -mkdir -p /input/
-	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-submit:$(current_branch) hdfs dfs -copyFromLocal /tmp/cards.txt /input/
-	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-submit:$(current_branch)
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} -v ${data_dir}:/data cicorias/hadoop-base:$(current_branch) hdfs dfs -copyFromLocal /data/cards.txt /input/
+	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} hadoop-missingcard
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -cat /output/*
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /output
 	docker run --network ${DOCKER_NETWORK} --env-file ${ENV_FILE} cicorias/hadoop-base:$(current_branch) hdfs dfs -rm -r /input
